@@ -12,10 +12,16 @@ function Login() {
     useEffect(() => {
         instance.handleRedirectPromise().then((response) => {
             if (response) {
-                // If a response is received, redirect to the desired path
+                // ข้อมูลผู้ใช้ที่ได้จาก Azure AD
+                const user = response.account;
+
+                // บันทึกข้อมูลผู้ใช้ (เช่น บันทึกในฐานข้อมูลหรือสถานที่อื่น ๆ)
+                saveUserData(user);
+
+                // Redirect ไปยังเส้นทางที่ต้องการ
                 navigate("/tfac-short-link", { replace: true });
             } else if (accounts.length > 0) {
-                // If the user is already authenticated, redirect them
+                // ถ้าผู้ใช้ล็อกอินอยู่แล้ว
                 navigate("/tfac-short-link", { replace: true });
             }
         }).catch((e) => {
@@ -27,6 +33,13 @@ function Login() {
         instance.loginRedirect(loginRequest).catch((e) => {
             console.error(e);
         });
+    };
+
+    // ฟังก์ชันบันทึกข้อมูลผู้ใช้
+    const saveUserData = (user) => {
+        // ตัวอย่างการบันทึกข้อมูลใน LocalStorage (คุณสามารถเปลี่ยนให้บันทึกในฐานข้อมูลหรืออื่น ๆ ได้)
+        localStorage.setItem('user', JSON.stringify(user));
+        // หรือใช้ API เพื่อส่งข้อมูลไปยัง backend เพื่อบันทึกในฐานข้อมูล
     };
 
     return (
